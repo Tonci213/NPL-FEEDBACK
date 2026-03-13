@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: userId
+    // Fields:
+    //   - uid: string (required)
+    //   - email: string (required, email format)
+    //   - role: string (required, enum: librarian, parent, student)
+    //   - displayName: string (optional)
+    //
+    // Collection: students
+    // Document ID: studentId
+    // Fields:
+    //   - name: string (required)
+    //   - grade: string (required, enum: K, 1, 2, 3, 4, 5, 6)
+    //   - parentEmail: string (optional)
+    //   - libraryId: string (optional)
+    //   - userId: string (optional)
+    //   - parentId: string (optional)
+    //   - profilePictureUrl: string (optional)
+    //
+    // Collection: parents
+    // Document ID: parentId
+    // Fields:
+    //   - userId: string (required)
+    //   - childIds: list (optional, list of strings)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        (exists(/databases/$(database)/documents/users/$(request.auth.token.email)) && get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'admin') ||
+        (request.auth.token.email == "toncirafael@gmail.com" && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isLibrarian() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.token.email)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.role == 'librarian';
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() || isLibrarian();
+      allow update: if isAdmin() || isLibrarian();
+    }
+
+    match /students/{studentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() || isLibrarian();
+      allow update: if isAdmin() || isLibrarian();
+    }
+
+    match /parents/{parentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() || isLibrarian();
+      allow update: if isAdmin() || isLibrarian();
+    }
+
+    match /library_events/{eventId} {
+      allow read: if true;
+      allow create: if isAdmin() || isLibrarian();
+      allow update: if isAdmin() || isLibrarian();
+      allow delete: if isAdmin() || isLibrarian();
+    }
+
+    match /certificates/{certificateId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if isAdmin() || isLibrarian();
+      allow delete: if isAdmin() || isLibrarian();
+    }
+
+    match /user_progress/{progressId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin() || isLibrarian();
+    }
+
+    match /library_visits/{visitId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin() || isLibrarian();
+    }
+
+    match /children/{childId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() || isLibrarian();
+      allow update: if isAdmin() || isLibrarian();
+      allow delete: if isAdmin() || isLibrarian();
+    }
+
+    match /child_activities/{activityId} {
+      allow read: if isAuthenticated();
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin() || isLibrarian();
+    }
+
+    match /library_accounts/{accountId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin() || isLibrarian();
+    }
+  }
+}

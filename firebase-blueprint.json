@@ -1,0 +1,120 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Base user entity",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["librarian", "parent", "student"] },
+        "displayName": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Student profile",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "grade": { "type": "string", "enum": ["K", "1", "2", "3", "4", "5", "6"] },
+        "parentEmail": { "type": "string", "format": "email" },
+        "libraryId": { "type": "string" },
+        "parentId": { "type": "string" },
+        "profilePictureUrl": { "type": "string" }
+      },
+      "required": ["name", "grade"]
+    },
+    "Parent": {
+      "title": "Parent",
+      "description": "Parent profile",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "childIds": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["userId"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Library event",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "description": { "type": "string" },
+        "posterUrl": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "date"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Student certificate",
+      "type": "object",
+      "properties": {
+        "studentName": { "type": "string" },
+        "activityName": { "type": "string" },
+        "gradeLevel": { "type": "string" },
+        "libraryId": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["studentName", "activityName"]
+    },
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "User progress summary",
+      "type": "object",
+      "properties": {
+        "libraryId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "totalCertificates": { "type": "number" }
+      },
+      "required": ["libraryId"]
+    },
+    "Visit": {
+      "title": "Visit",
+      "description": "Library visit",
+      "type": "object",
+      "properties": {
+        "libraryId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "activities": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["libraryId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "User profiles"
+    },
+    "/students/{studentId}": {
+      "schema": { "$ref": "Student" },
+      "description": "Student data"
+    },
+    "/parents/{parentId}": {
+      "schema": { "$ref": "Parent" },
+      "description": "Parent data"
+    },
+    "/library_events/{eventId}": {
+      "schema": { "$ref": "Event" },
+      "description": "Library events"
+    },
+    "/certificates/{certificateId}": {
+      "schema": { "$ref": "Certificate" },
+      "description": "Student certificates"
+    },
+    "/user_progress/{progressId}": {
+      "schema": { "$ref": "UserProgress" },
+      "description": "User progress summaries"
+    },
+    "/library_visits/{visitId}": {
+      "schema": { "$ref": "Visit" },
+      "description": "Library visits"
+    }
+  }
+}

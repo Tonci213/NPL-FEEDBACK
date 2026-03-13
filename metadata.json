@@ -1,0 +1,5 @@
+{
+  "name": "NPL Activity Feedback",
+  "description": "A feedback collection tool for Nashville Public Library activities, tailored to children's grade levels from K to 6.",
+  "requestFramePermissions": ["camera"]
+}

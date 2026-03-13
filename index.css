@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Pinyon+Script&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Fredoka", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-[#FFF9F0] text-slate-800;
+    background-image: 
+      radial-gradient(#FFD700 1px, transparent 1px),
+      radial-gradient(#FF69B4 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    background-attachment: fixed;
+  }
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.kid-card {
+  @apply bg-white rounded-[2.5rem] border-4 border-slate-100 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)] transition-all;
+}
+
+.kid-card:hover {
+  @apply shadow-[12px_12px_0px_0px_rgba(0,0,0,0.08)] -translate-y-2 rotate-1;
+}
+
+.btn-bouncy {
+  @apply transition-all active:scale-90 hover:scale-110 hover:-rotate-2 shadow-[0_8px_0_0_rgba(0,0,0,0.1)] active:shadow-[0_0px_0_0_rgba(0,0,0,0.1)] active:translate-y-2;
+}
+
+.text-shadow-sm {
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+}
+
+.text-shadow-md {
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.text-shadow-lg {
+  text-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+}
+
+@media print {
+  @page {
+    margin: 0;
+    size: landscape;
+  }
+  
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide everything by default in print mode */
+  /* body > * {
+    display: none;
+  } */
+
+  /* Only show the certificate (which will be a direct child of body or root in the portal, 
+     but in our case it's inside App. We need to target it specifically) */
+  /* Actually, the easier way is to use Tailwind's print:hidden on the main container 
+     and print:block on the certificate. */
+}
